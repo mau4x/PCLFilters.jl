@@ -1,8 +1,9 @@
 module PCLFilters
 
-export AbstractFilter, AbstractVoxelGridFilter,
-    UniformSampling, PassThrough, VoxelGrid, ApproximateVoxelGrid,
-    StatisticalOutlierRemoval, RadiusOutlierRemoval, ExtractIndices,
+export AbstractFilter, getRemovedIndices,
+    AbstractVoxelGridFilter, UniformSampling, PassThrough, VoxelGrid,
+    ApproximateVoxelGrid, StatisticalOutlierRemoval, RadiusOutlierRemoval,
+    ExtractIndices,
     setRadiusSearch, setFilterFieldName, setFilterLimits, setLeafSize,
     setKeepOrganized, setMeanK, setStddevMulThresh, setMinNeighborsInRadius,
     setNegative
@@ -30,17 +31,21 @@ cxx"""
 """
 
 import Base: filter
-import PCLCommon: setInputCloud, setIndices
 
 abstract AbstractFilter <: PCLBase
 abstract AbstractVoxelGridFilter <: AbstractFilter
 
-setInputCloud(f::AbstractFilter, cloud::PointCloud) =
-    icxx"$(f.handle)->setInputCloud($(cloud.handle));"
+### Abstract methods for Filter ###
+
+function getRemovedIndices(f::AbstractFilter)
+    icxx"$(f.handle)->getRemovedIndices();"
+end
 filter(f::AbstractFilter, cloud::cxxt"boost::shared_ptr<std::vector<int>>") =
     icxx"$(f.handle)->filter(*$(cloud));"
 filter(f::AbstractFilter, cloud::PointCloud) =
     icxx"$(f.handle)->filter(*$(cloud.handle));"
+
+### Filter types ###
 
 for (name, supername) in [
     (:UniformSampling, AbstractFilter),
@@ -87,12 +92,9 @@ for f in [:setRadiusSearch, :setMinNeighborsInRadius]
     @eval $f(r::RadiusOutlierRemoval, v) = $body
 end
 
-for f in [:setNegative, :setIndices]
+for f in [:setNegative]
     body = Expr(:macrocall, symbol("@icxx_str"), "\$(ex.handle)->$f(\$v);")
     @eval $f(ex::ExtractIndices, v) = $body
 end
-
-setIndices(ex::ExtractIndices, indices::PointIndices) =
-    setIndices(ex, indices.handle)
 
 end # module
