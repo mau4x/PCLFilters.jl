@@ -12,7 +12,7 @@ using LibPCL
 using PCLCommon
 using Cxx
 
-libpcl_filters = LibPCL.find_library_e("libpcl_filters")
+const libpcl_filters = LibPCL.find_library_e("libpcl_filters")
 try
     Libdl.dlopen(libpcl_filters, Libdl.RTLD_GLOBAL)
 catch e
