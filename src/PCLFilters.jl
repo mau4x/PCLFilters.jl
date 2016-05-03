@@ -57,7 +57,7 @@ for (name, supername) in [
     (:ExtractIndices, AbstractFilter),
     ]
     cxxname = "pcl::$name"
-    valname = symbol(name, "Val")
+    valname = Symbol(name, "Val")
     @eval begin
         @defpcltype $name{T} <: $supername $cxxname
         @defptrconstructor $name{T}() $cxxname
@@ -74,7 +74,7 @@ setFilterLimits(pass::PassThrough, lo, hi) =
     icxx"$(pass.handle)->setFilterLimits($lo, $hi);"
 
 for f in [:setKeepOrganized, :setFilterLimitsNegative]
-    body = Expr(:macrocall, symbol("@icxx_str"), "\$(pass.handle)->$f(\$v);")
+    body = Expr(:macrocall, Symbol("@icxx_str"), "\$(pass.handle)->$f(\$v);")
     @eval $f(pass::PassThrough, v::Bool) = $body
 end
 
@@ -83,17 +83,17 @@ setLeafSize(v::AbstractVoxelGridFilter, lx, ly, lz) =
 
 
 for f in [:setMeanK, :setStddevMulThresh]
-    body = Expr(:macrocall, symbol("@icxx_str"), "\$(s.handle)->$f(\$v);")
+    body = Expr(:macrocall, Symbol("@icxx_str"), "\$(s.handle)->$f(\$v);")
     @eval $f(s::StatisticalOutlierRemoval, v) = $body
 end
 
 for f in [:setRadiusSearch, :setMinNeighborsInRadius]
-    body = Expr(:macrocall, symbol("@icxx_str"), "\$(r.handle)->$f(\$v);")
+    body = Expr(:macrocall, Symbol("@icxx_str"), "\$(r.handle)->$f(\$v);")
     @eval $f(r::RadiusOutlierRemoval, v) = $body
 end
 
 for f in [:setNegative]
-    body = Expr(:macrocall, symbol("@icxx_str"), "\$(ex.handle)->$f(\$v);")
+    body = Expr(:macrocall, Symbol("@icxx_str"), "\$(ex.handle)->$f(\$v);")
     @eval $f(ex::ExtractIndices, v) = $body
 end
 
