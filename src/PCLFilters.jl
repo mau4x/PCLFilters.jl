@@ -1,3 +1,13 @@
+"""
+The **pcl_filters** library contains outlier and noise removal mechanisms for 3D
+point cloud data filtering applications.
+
+http://docs.pointclouds.org/trunk/group__filters.html
+
+## Exports
+
+$(EXPORTS)
+"""
 module PCLFilters
 
 export AbstractFilter, getRemovedIndices,
@@ -8,6 +18,7 @@ export AbstractFilter, getRemovedIndices,
     setKeepOrganized, setMeanK, setStddevMulThresh, setMinNeighborsInRadius,
     setNegative
 
+using DocStringExtensions
 using LibPCL
 using PCLCommon
 using Cxx
