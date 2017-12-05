@@ -43,8 +43,8 @@ cxx"""
 
 import Base: filter
 
-abstract AbstractFilter <: PCLBase
-abstract AbstractVoxelGridFilter <: AbstractFilter
+abstract type AbstractFilter <: PCLBase end
+abstract type AbstractVoxelGridFilter <: AbstractFilter end
 
 ### Abstract methods for Filter ###
 
